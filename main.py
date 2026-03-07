@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from typing import Optional
 from abc import ABC, abstractmethod
 
@@ -9,6 +10,7 @@ class Catalogable(ABC):
         """Return a formatted citation string for this item."""
         ...
 
+    @abstractmethod
     def is_valid(self) -> bool:
         """Return True if the item has all required fields populated."""
         ...
@@ -108,6 +110,21 @@ class Article(Publication, Catalogable):
     def __repr__(self) -> str:
         return f"Article(title='{self.title}', author='{self.author}', year={self.year})"
 
+def genre_generator(pubs: Iterable[Publication], genre: str):
+    """A generator that returns pubs from specific genre"""
+    for pub in pubs:
+        if isinstance(pub, Book) and pub.genre == genre:
+            yield pub
+
+class Library:
+    def __init__(self, pubs: Iterable[Publication]):
+        self.pubs = pubs
+
+    def __iter__(self):
+        for pub in self.pubs:
+            if isinstance(pub, Catalogable) and pub.is_valid():
+                yield pub
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     book1 = Book("Ready Player One", "Ernest Cline", 2010, 300, "Sci-Fi")
@@ -117,3 +134,22 @@ if __name__ == '__main__':
     article2 = Article("Sample Article", "specktro", 1990, "The New Yorker")
     pubs = [book1, book2, book3, article1, article2]
     print(sorted(pubs))
+
+    books = [pub for pub in pubs if isinstance(pub, Book)]
+    print("=== Just Books ===")
+    print(books)
+
+    author_index = {}
+    for pub in pubs:
+        author_index.setdefault(pub.author, []).append(pub.title)
+    print("\n=== Autor → Publications ===")
+    print(dict(author_index))
+
+    print("\n=== Sci-Fi ===")
+    for pub in genre_generator(pubs, "Sci-Fi"):
+        print(pub)
+
+    library = Library(pubs)
+    print("\n=== Library (just valid publications) ===")
+    for pub in library:
+        print(pub)
