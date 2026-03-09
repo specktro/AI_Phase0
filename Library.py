@@ -1,7 +1,8 @@
 from collections.abc import Iterable
 from typing import Optional
 from abc import ABC, abstractmethod
-from Decorators import timer
+from Decorators import timer, validate_year, log_access, singleton
+
 
 class Catalogable(ABC):
     """Abstract base class for items that can be catalogued in a library system."""
@@ -19,6 +20,7 @@ class Catalogable(ABC):
 class Publication:
     """Base class representing a published work with a title, author, and year."""
 
+    @validate_year
     def __init__(self, title: str, author: str, year: int):
         """
         Args:
@@ -69,6 +71,7 @@ class Book(Publication, Catalogable):
         self.pages = pages
         self.genre = genre
 
+    @log_access
     def catalogue(self) -> str:
         """Return a formatted book citation string."""
         return f"[BOOK] {self.author} ({self.year}). {self.title}. {self.pages}p. Genre: {self.genre}"
@@ -99,6 +102,7 @@ class Article(Publication, Catalogable):
         self.magazine = magazine
         self.doi = doi
 
+    @log_access
     def catalogue(self) -> str:
         """Return a formatted article citation string, including DOI if available."""
         doi_str = f" DOI: {self.doi}" if self.doi else ""
@@ -117,7 +121,7 @@ def genre_generator(pubs: Iterable[Publication], genre: str):
     for pub in pubs:
         if isinstance(pub, Book) and pub.genre == genre:
             yield pub
-
+@singleton
 class Library:
     def __init__(self, pubs: Iterable[Publication]):
         self.pubs = pubs

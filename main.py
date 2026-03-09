@@ -27,3 +27,11 @@ if __name__ == '__main__':
     print("\n=== Library (just valid publications) ===")
     for pub in library:
         print(pub)
+
+    book4 = Book("Sample Title", "specktro", 2024, 500, "Sci-Fi")
+
+    lib1 = Library([book1, book2])   # "Library created"
+    lib2 = Library([book3])          # gets the same Library
+
+    print(lib1 is lib2)              # True — they're the same object
+    print(len(list(lib1)))
