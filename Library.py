@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from typing import Optional
 from abc import ABC, abstractmethod
+from Decorators import timer
 
 class Catalogable(ABC):
     """Abstract base class for items that can be catalogued in a library system."""
@@ -110,6 +111,7 @@ class Article(Publication, Catalogable):
     def __repr__(self) -> str:
         return f"Article(title='{self.title}', author='{self.author}', year={self.year})"
 
+@timer
 def genre_generator(pubs: Iterable[Publication], genre: str):
     """A generator that returns pubs from specific genre"""
     for pub in pubs:
