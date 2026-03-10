@@ -126,6 +126,11 @@ class Library:
     def __init__(self, pubs: Iterable[Publication]):
         self.pubs = pubs
 
+    @timer
+    def catalogue_all(self) -> list[str]:
+        """Returns catalogue strings for all valid publications."""
+        return [pub.catalogue() for pub in self if isinstance(pub, Catalogable)]
+
     def __iter__(self):
         for pub in self.pubs:
             if isinstance(pub, Catalogable) and pub.is_valid():
