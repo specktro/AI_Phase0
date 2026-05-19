@@ -1,4 +1,4 @@
-import numpy as np
+import numpy            as np
 
 # Dado el siguiente dataset simulado de 100 estudiantes con
 # 4 features cada uno (notas en 4 materias, escala 0-10):
