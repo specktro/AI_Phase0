@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from typing import Optional
 from abc import ABC, abstractmethod
-from Decorators import timer, validate_year, log_access, singleton
+from decorators import timer, validate_year, log_access, singleton
 
 
 class Catalogable(ABC):
