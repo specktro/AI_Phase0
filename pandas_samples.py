@@ -38,3 +38,38 @@ df = pd.DataFrame({
 #    average >= 5.0 → "C"
 #    average <  5.0 → "D"
 #    Hint: pd.cut o np.select — elige el que prefieras.
+
+# Exercise 1 — initial inspection
+print(df.shape)
+print(df.dtypes)
+print(df.isnull().sum())
+print(df.describe())
+
+# Exercise 2 — fill nulls
+df["city"] = df["city"].fillna("Unknown")
+
+# Exercise 3 — average column, no loops
+df["average"] = (df["score_1"] + df["score_2"] + df["score_3"]) / 3
+
+# Exercise 4 — groupby with agg
+summary = (
+    df.groupby("major")["average"]
+    .agg(mean="mean", std="std", count="count")
+    .sort_values("mean", ascending=False)
+)
+print(summary)
+
+# Exercise 5 — filter and report
+filtered = df.query("average >= 7.0 and year == 1")
+print(f"Students with average >= 7.0 in year 1: {len(filtered)}")
+print(filtered[["name", "major"]])
+
+# Exercise 6 — grade column with np.select
+conditions = [
+    df["average"] >= 9.0,
+    df["average"] >= 7.0,
+    df["average"] >= 5.0,
+]
+choices = ["A", "B", "C"]
+df["grade"] = np.select(conditions, choices, default="D")
+print(df[["name", "average", "grade"]].head(10))
